@@ -26,20 +26,21 @@ function Lobby({ username }) {
           });
     }
     useEffect(() => {
-        if(!initialized) {
-            registerPlayer().then(() => { setInitialized(true) })
-            axios.get(URL + "/lobby")
-            .then((response) => { console.log(response.data); setPlayers(response.data) })
-            .catch((error) => console.log(error));
-            const eventSource = new EventSource(URL + `/${ username }`);
-            eventSource.onmessage = event => {
-                console.log(event.data);
-                setBoardId(event.data);
-                setBoardInitialized(true);
-              };
-        }
-    }, [initialized, username, registerPlayer])
-    return boardId === null ? (
+        localStorage.setItem('username', JSON.stringify(username));
+        registerPlayer().then(() => { setInitialized(true) })
+        axios.get(URL + "/lobby")
+        .then((response) => { console.log(response.data); setPlayers(response.data) })
+        .catch((error) => console.log(error));
+        const eventSource = new EventSource(URL + `/${ username }`);
+        eventSource.onmessage = event => {
+            if(!boardInitialized) setBoardId(event.data);
+            setBoardInitialized(true);
+            //console.log("Event Here");
+            //console.log(event.data);
+          };
+          if(boardInitialized) eventSource.close();
+    }, [initialized, boardInitialized, username, registerPlayer])
+    return !boardInitialized ? (
         <div className="relative grid grid-cols-1 w-80 items-center text-center justify-center
         h-40 rounded-xl m-auto mt-10 ring-2 ring-slate-700 gap-4 ease-in-out transition-all">
         <div className="absolute inset-x-0 top-0 rounded-t-xl
@@ -54,6 +55,6 @@ function Lobby({ username }) {
             ))}
             </ul>
     </div>
-    ) : <GameBoard board={ boardId } opponent={ opponent }/>
+    ) : <GameBoard board={ boardId } player = { username }/>
 }
 export default Lobby;
