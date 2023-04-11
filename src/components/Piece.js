@@ -4,14 +4,7 @@ function Piece({ pieceSymbol, clicked }) { //turn, setTurn, index, dataHandler
     const [symbol, setSymbol] = useState("");
     const [active, setActive] = useState(true);
     const handleClick = () => {
-        //if(active) {
-            console.log("here");
-            console.log(pieceSymbol);
-            clicked();
-            //setActive(false)
-            //dataHandler(index)
-            //setTurn(turn ^ true)
-        //}
+        clicked();
     }
     return (
         <div className={`flex h-10 w-10 rounded-xl ring-2 ${symbol === "" ? "ring-black" : symbol === "X"? "ring-blue-600": "ring-red-600"}

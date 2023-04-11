@@ -8,6 +8,7 @@ function GameBoard({ board, player }) {
       [null, null, null],
       [null, null, null],
     ]);
+    const [closed, setClosed] = useState(false);
 
     const handleClick = useCallback(async (row, col) => {
       await axios.post(URL, {
@@ -19,37 +20,35 @@ function GameBoard({ board, player }) {
 
     useEffect(() => {
       console.log(player);
-      //setBoardData(prevdata.board);
-      //const eventSource = new EventSource(URL + `/subscribe?boardId=${ board.replace(/"/g, '') }`);
       const eventSource = new EventSource(URL + `/${ player }`);
-      eventSource.onmessage = event => {
-        const data = JSON.parse(event.data);
-        setBoardData(data.board);
-        console.log("Board Here");
-        console.log(data);
-      };
+      if(!closed) {
+        eventSource.onmessage = event => {
+          if(event.data !== "disconnect") {
+            const data = JSON.parse(event.data);
+            setBoardData(data.board);
+            console.log("Board Here");
+            console.log(data);
+          } else { setClosed(true) }
+        };
+        if(closed) { eventSource.close(); }
       //  return () => {
       //    eventSource.close();
       //  };
+    }
     }, []);
 
-    const pieceType = (cell) => {
-      if(cell === null) return ' ';
-      return cell.pieceType;
-    }
+
   
-    return (
+    return closed === false ? (
+      <div className='flex w-screen h-screen justify-center items-center'>
       <div className="grid grid-cols-3 gap-2">
         {boardData.map((row, rowIndex) => (
-          //<div key={rowIndex}>
             row.map((cell, cellIndex) => (
-              //<span key={cellIndex}>
                 <Piece pieceSymbol = {cell ? cell.pieceType : ' '} clicked = { () => handleClick(rowIndex, cellIndex) } />
-              //</span>
             ))
-          //</div>
         ))}
       </div>
-    );
+      </div>
+    ):(<> Game ended </>);
 }
 export default GameBoard;

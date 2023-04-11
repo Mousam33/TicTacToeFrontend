@@ -35,8 +35,6 @@ function Lobby({ username }) {
         eventSource.onmessage = event => {
             if(!boardInitialized) setBoardId(event.data);
             setBoardInitialized(true);
-            //console.log("Event Here");
-            //console.log(event.data);
           };
           if(boardInitialized) eventSource.close();
     }, [initialized, boardInitialized, username, registerPlayer])

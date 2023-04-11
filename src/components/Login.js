@@ -2,7 +2,7 @@ import { useState } from "react";
 import Lobby from "./Lobby";
 
 function Login() {
-    const [user, setUser]   = useState(null);//JSON.parse(localStorage.getItem('username'))
+    const [user, setUser]   = useState(JSON.parse(localStorage.getItem('username')));
     const [input, setInput] = useState("");
     return  user === null ? (
     <div className="relative grid grid-cols-1 w-80 items-center text-center justify-center
