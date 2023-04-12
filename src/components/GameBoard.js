@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import Piece from "./Piece";
 function GameBoard({ board, player }) {
-    const URL = "https://tictactoe.mousams.repl.co";
+    const URL = "http://localhost:8080";
     const [boardData, setBoardData] = useState([
       [null, null, null],
       [null, null, null],
@@ -11,18 +11,24 @@ function GameBoard({ board, player }) {
     const [closed, setClosed] = useState(false);
 
     const handleClick = useCallback(async (row, col) => {
+      console.log( {
+        name: player,
+        input: row + ","+ col,
+        boardId: board.replace(/"/g, '')
+      });
       await axios.post(URL, {
         name: player,
         input: row + ","+ col,
         boardId: board.replace(/"/g, '')
-      }).catch((err) => {console.log(err)})
+      }).then((resp) => { console.log(resp.data) }).catch((err) => {console.log(err)})
     },[player, board, URL])
 
     useEffect(() => {
-      console.log(player);
-      const eventSource = new EventSource(URL + `/${ player }`);
-      if(!closed) {
+      console.log("Is closed: "+ closed + " Getting player ES from " + URL + `/${ player }`);
+
+        const eventSource = new EventSource(URL + `/${ player }`);
         eventSource.onmessage = event => {
+          console.log(event.data);
           if(event.data !== "disconnect") {
             const data = JSON.parse(event.data);
             setBoardData(data.board);
@@ -34,7 +40,7 @@ function GameBoard({ board, player }) {
       //  return () => {
       //    eventSource.close();
       //  };
-    }
+
     }, []);
 
 
@@ -49,6 +55,6 @@ function GameBoard({ board, player }) {
         ))}
       </div>
       </div>
-    ):(<> Game ended </>);
+    ):(<> Game ended... Refresh this page to log back in...</>);
 }
 export default GameBoard;
