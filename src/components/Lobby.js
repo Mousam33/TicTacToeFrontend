@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import GameBoard from "./GameBoard";
 function Lobby({ username, setUser }) {
-    const URL = "http://localhost:8080";//https://tictactoe.mousams.repl.co
+    const URL = "https://tictactoe.mousams.repl.co";//https://tictactoe.mousams.repl.co
     const [initialized, setInitialized] = useState(false);
     const [boardInitialized, setBoardInitialized] = useState(false);
     const [opponent, setOpponent] = useState("");

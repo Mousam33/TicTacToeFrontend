@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import Piece from "./Piece";
 function GameBoard({ board, player }) {
-    const URL = "http://localhost:8080";
+    const URL = "https://tictactoe.mousams.repl.co";
     const [boardData, setBoardData] = useState([
       [null, null, null],
       [null, null, null],
